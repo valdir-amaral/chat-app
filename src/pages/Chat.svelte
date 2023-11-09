@@ -37,9 +37,9 @@
         newMsg = '';
     }
 </script>
-
+<p style="margin-bottom: 40px;">Você é o user {localStorage.user} :)</p>
 {#each msgs as msg}
-<p>{msg.expand.user.name} -- {msg.message}</p>
+<p>User {msg.user} -- {msg.message}</p>
 {/each}
 
 
