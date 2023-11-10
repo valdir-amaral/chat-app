@@ -9,7 +9,6 @@
     let msgs = [];
     let friend = '';
     let chatContainer;
-
     afterUpdate(() => {
         if (msgs) scrollToBottom(chatContainer)
     })
@@ -19,7 +18,7 @@
             sendMessage();
         }
     });
-
+    
     $pbStore.collection('chat_msg').subscribe('*', e => {
         if(e.record.user != localStorage.user) {
             $pbStore.collection('chat_msg').getOne(e.record.id, {
@@ -61,7 +60,17 @@
     const scrollToBottom = async (node) => {
         node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
     }; 
-    
+
+    document.addEventListener('beforeinput', event => {
+        const {
+            inputType,
+        } = event;
+        if (['insertParagraph', 'insertLineBreak'].includes(inputType)) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+
 </script>
 <div class="container">
     <div>
@@ -78,7 +87,15 @@
     
     
     <div class="bottom-part">
-        <input bind:value={newMsg} type="text">
+        <div style="width: 100%;">
+            <p class="new-input" bind:textContent={newMsg} contenteditable="true">
+                {newMsg}
+            </p>
+            {#if !newMsg}
+                <p class="placeholder">Enviar mensagem...</p>
+            {/if}
+        </div>
+        
         
         {#if newMsg.length}
         <button on:click={sendMessage}>➜</button>
@@ -88,8 +105,10 @@
 
 <style>
     .bottom-part {
+        display: flex;
         margin-top: auto;
         padding-bottom: 40px;
+        gap: 15px;
     }
     .container {
         height: 100%;
@@ -115,21 +134,31 @@
         border-radius: 10px 10px 0 10px;
         background-color: purple;
     }
+    .placeholder {
+        pointer-events: none;
+        position: relative;
+        top: -28px;
+        font-size: 14px;
+        left: 10px;
+    }
     .message.other {
         margin-right: auto;
         background-color: #292929;
         border-radius: 10px 10px 10px 0;
     }
-    input {
+    .new-input {
+        word-break: break-word;
         border-radius: 20px;
-        width: 100%;
         border: none;
         color: white;
-        padding-inline: 0 !important;
+        padding-inline-end: 10px !important;
         padding: 10px;
+        max-height: 75px;
+        overflow-y: auto;
         background-color: #292929;
     }
     button {
+        max-height: 40px;
         padding: 10px;
         background-color: purple;
         border: none;
