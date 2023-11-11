@@ -111,8 +111,11 @@
 
 <style>
 h1 {
-    margin-top: 70px;
+    
     line-height: 44px;
+}
+.container {
+    padding-top: 70px;
 }
 .warn-validation {
     color: rgb(253, 42, 42);

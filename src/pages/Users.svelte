@@ -75,9 +75,11 @@
 
 
 <style>
+    .container {
+        padding-top: 50px;
+    }
     h2 {
         margin-bottom: 30px;
-        margin-top: 50px;
     }
 
     .user {
