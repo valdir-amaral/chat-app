@@ -23,7 +23,7 @@
         $pbStore.collection('users').authWithPassword(name, password)
         .then(res => {
             localStorage.setItem('user', $pbStore.authStore.model.id)
-            push('/posts')
+            push('/explorar')
         })
         .catch(err => {
             warnLogin = "Usuário e/ou senha incorretos!"

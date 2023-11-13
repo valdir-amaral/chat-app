@@ -1,19 +1,19 @@
 <script>
     import { link } from "svelte-spa-router";
-
+    import active from 'svelte-spa-router/active'
 
 </script>
 
 <nav>
     <footer>
         <div>
-            <a class="active" use:link href="/explorar">Explorar</a>
+            <a use:active={'/explorar'} use:link href="/explorar">Explorar</a>
         </div>
         <div>
-            <a use:link href="/direct">Mensagens</a>
+            <a use:active={'/chat'} use:link href="/chat">Mensagens</a>
         </div>
         <div>
-            <a use:link href="/perfil">Perfil</a>
+            <a use:active={'/perfil'} use:link href="/perfil">Perfil</a>
         </div>
     </footer>
 </nav>
@@ -43,10 +43,10 @@
     nav footer > div {
         position: relative;
     }
-    nav footer a.active {
-        color: white;
+    :global(footer a.active) {
+        color: white !important;
     }
-    nav footer a.active::before {
+    :global(nav footer a.active::before) {
         content: '';
         height: 10px;
         background-color: #0e1013;

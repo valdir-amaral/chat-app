@@ -22,14 +22,7 @@
         }
     })
 
-    onMount(() => {
-        $pbStore.collection('chat_room').getList(1,20,{expand: "people"})
-        .then(res => {
-            rooms = res.items.filter(i => {
-                return i.people.includes(localStorage.getItem('user'))
-            });  
-        })
-    })
+    
 
     const searchUsers = () => {
         $pbStore.collection('users').getList(1,20,{filter: `username ~ "${query}" && id != "${localStorage.user}"`})

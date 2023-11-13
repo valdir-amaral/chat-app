@@ -9,6 +9,7 @@
     let msgs = [];
     let friend = '';
     let chatContainer;
+    
     afterUpdate(() => {
         if (msgs) scrollToBottom(chatContainer)
     })
@@ -48,13 +49,22 @@
     function sendMessage() {
         if (!newMsg.length) return;
         msgs.push({message: newMsg, 'chat_room': params.id, 'user': localStorage.user})
-        msgs = msgs
+        msgs = msgs;
+        let sendMessage = newMsg;
+        newMsg = "";
+
         $pbStore.collection('chat_msg').create({
-            'message': newMsg,
+            'message': sendMessage,
             'chat_room': params.id,
             'user': localStorage.user
         })
-        newMsg = '';
+        .then(res => {
+            $pbStore.collection('chat_room').update(params.id, {
+            'messages+': res.id
+            })
+
+        })
+        
     }
 
     const scrollToBottom = async (node) => {
