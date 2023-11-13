@@ -6,9 +6,15 @@
 
 <nav>
     <footer>
-        <a class="active" use:link href="/explorar">Explorar</a>
-        <a use:link href="/direct">Mensagens</a>
-        <a use:link href="/perfil">Perfil</a>
+        <div>
+            <a class="active" use:link href="/explorar">Explorar</a>
+        </div>
+        <div>
+            <a use:link href="/direct">Mensagens</a>
+        </div>
+        <div>
+            <a use:link href="/perfil">Perfil</a>
+        </div>
     </footer>
 </nav>
 
@@ -25,14 +31,29 @@
         display: flex;
         justify-content: center;
         gap: 16px;
+        position: relative;
     }
     nav footer a {
         font-size: 13px;
         color: #5e5e5e;
         padding: 5px 5px 0 5px;
         text-decoration: none;
+        transition: all .3s ease-in-out;
+    }
+    nav footer > div {
+        position: relative;
     }
     nav footer a.active {
         color: white;
+    }
+    nav footer a.active::before {
+        content: '';
+        height: 10px;
+        background-color: #0e1013;
+        position: absolute;
+        top: -20px;
+        left: 0;
+        width: 100%;
+        border-radius: 0 0 10px 10px;
     }
 </style>

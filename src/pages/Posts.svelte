@@ -5,5 +5,7 @@
 
 </script>
 
-<Users />
+<div class="container">
+    <h2>Aqui vai ser uma linda página com postagens</h2>
+</div>
 <NavMenuBottom />

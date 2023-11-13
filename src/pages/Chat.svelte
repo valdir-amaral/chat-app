@@ -38,7 +38,7 @@
         .then(res => {
             currentRoom = res
             friend = currentRoom.expand.people.filter(i => i.id != localStorage.user)[0].username;
-
+            console.log(res)
         })
 
         $pbStore.collection('chat_msg').getList(1, 50, {filter: `chat_room="${params.id}"`, expand: 'user'})
@@ -71,11 +71,15 @@
         }
     });
 
+    function followUser() {
+        $pbStore.collection('users').update(localStorage.user, {'following+': friend.id})
+        .then(res => console.log(res))
+    }
 </script>
 <div class="chat-layout">
     <header>
         <div class="container top-part">
-            <h2>{friend}</h2>
+            <h2>{friend} <button class="follow-btn" on:click={followUser}>Seguir</button></h2>
             <p style="margin-bottom: 40px;">Você é o user {localStorage.user} :)</p>
         </div>
     </header>
@@ -117,6 +121,10 @@
         flex-direction: column;
         padding-left: 16px;
         padding-right: 16px;
+    }
+    .follow-btn {
+        border-radius: 15px;
+        margin-left: 10px;
     }
     .chat {
         padding-left: 16px;
