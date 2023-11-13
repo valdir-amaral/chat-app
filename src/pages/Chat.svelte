@@ -72,11 +72,15 @@
     });
 
 </script>
-<div class="container">
-    <div>
-        <h2>{friend}</h2>
-        <p style="margin-bottom: 40px;">Você é o user {localStorage.user} :)</p>
-    </div>
+<div class="chat-layout">
+    <header>
+        <div class="container top-part">
+            <h2>{friend}</h2>
+            <p style="margin-bottom: 40px;">Você é o user {localStorage.user} :)</p>
+        </div>
+    </header>
+
+
     <div bind:this={chatContainer} class="chat">
         {#each msgs as msg}
         <div class="message" class:me={msg.user == localStorage.user} class:other={msg.user != localStorage.user}>
@@ -84,16 +88,13 @@
         </div>
         {/each}
     </div>
-    
-    
+
+
     <div class="bottom-part">
         <div style="width: 100%;">
             <p class="new-input" bind:textContent={newMsg} contenteditable="true">
                 {newMsg}
             </p>
-            {#if !newMsg}
-                <p class="placeholder">Enviar mensagem...</p>
-            {/if}
         </div>
         
         
@@ -106,21 +107,20 @@
 <style>
     .bottom-part {
         display: flex;
-        margin-top: auto;
-        padding-bottom: 40px;
         gap: 15px;
     }
+
     .container {
-        height: 100%;
         display: flex;
         flex-direction: column;
+        overflow-y: hidden;
     }
     .chat {
-        padding-bottom: 20px;
+        padding-bottom: 60px;
         display: flex;
         flex-direction: column;
         gap: 15px;
-        height: calc(100vh - 75px - 89px);
+        height: calc(100vh - 100px - 120px);
         overflow-y: auto;
     }
     .message {
@@ -134,13 +134,7 @@
         border-radius: 10px 10px 0 10px;
         background-color: purple;
     }
-    .placeholder {
-        pointer-events: none;
-        position: relative;
-        top: -28px;
-        font-size: 14px;
-        left: 10px;
-    }
+
     .message.other {
         margin-right: auto;
         background-color: #292929;
