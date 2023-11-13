@@ -42,6 +42,7 @@ body {
 	background-color: #0e1013;
 	color: white;
 	font-family: 'Inter';
+	overflow-y: hidden;
 }
 
 .container {

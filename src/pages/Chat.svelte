@@ -108,19 +108,24 @@
     .bottom-part {
         display: flex;
         gap: 15px;
+        padding-left: 6px;
+        padding-right: 6px;
     }
 
     .container {
         display: flex;
         flex-direction: column;
-        overflow-y: hidden;
+        padding-left: 16px;
+        padding-right: 16px;
     }
     .chat {
-        padding-bottom: 60px;
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-bottom: 20px;
         display: flex;
         flex-direction: column;
         gap: 15px;
-        height: calc(100vh - 100px - 120px);
+        height: calc(100vh - 100px - 100px);
         overflow-y: auto;
     }
     .message {
