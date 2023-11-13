@@ -5,15 +5,19 @@
     import {link} from 'svelte-spa-router';
 
     let rooms = [];
+    let promise = getRooms();
+
     onMount(() => {
-        $pbStore.collection('chat_room').getList(1,20,{sort: '-updated', expand: "people,messages"})
-        .then(res => {
-            rooms = res.items.filter(i => {
-                return i.people.includes(localStorage.getItem('user'))
-            });  
-            console.log(rooms)
-        })
+        promise = getRooms();
     })
+
+    async function getRooms() {
+        const res = await $pbStore.collection('chat_room').getList(1,20,{sort: '-updated', expand: "people,messages"})
+        let rooms = res.items.filter(i => {
+            return i.people.includes(localStorage.getItem('user'))
+        });  
+        return rooms;
+    }
 
     $pbStore.collection('chat_room').subscribe('*', e => {
         if (e.record.people.includes(localStorage.user)) {
@@ -28,9 +32,13 @@
     })
 </script>
 
+
 <div class="container">
     <h1>Mensagens</h1>
 
+    {#await promise}
+        <span class="loading-white"></span>
+    {:then rooms} 
     <div class="rooms-list">
         {#each rooms as room}
         {#if room.expand.messages}
@@ -52,6 +60,8 @@
         {/if}
         {/each}
     </div>
+    {/await}
+    
 
 </div>
 
@@ -59,6 +69,21 @@
 <NavMenuBottom />
 
 <style>
+    .container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+    }
+    .loading-white {
+        width: 70px;
+        margin: auto;
+        height: 70px;
+        border: 3px solid white;
+        border-right-color: transparent;
+        border-bottom-color: transparent;
+        animation-duration: 700ms;
+    }
     .rooms-list {
         margin-top: 40px;
     }

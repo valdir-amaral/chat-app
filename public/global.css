@@ -51,3 +51,28 @@ body {
 	max-width: 768px;
 	margin: auto;
 }
+
+.loading-white {
+    display: block;
+    margin: auto;
+    border: 3px solid white;
+    border-radius: 50%;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    width: 18px;
+    height: 18px;
+    animation-name: loading;
+    animation-duration: 600ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+
+@keyframes loading{
+	from {
+	  transform: rotate(0deg);
+	}
+	to {
+	  transform: rotate(360deg);
+	}
+  }

@@ -3,7 +3,7 @@
     import {pbStore} from '../stores';
     import { push, replace } from 'svelte-spa-router';
 
-    let name, password, warnLogin = '', warnSign = '';
+    let name, password, warnLogin = '', warnSign = '', loading = false;
     
     let state = 'login';
 
@@ -20,22 +20,25 @@
         */
     })
     const login = (name, password) => {
+        loading = true
         $pbStore.collection('users').authWithPassword(name, password)
         .then(res => {
             localStorage.setItem('user', $pbStore.authStore.model.id)
             push('/explorar')
         })
         .catch(err => {
+            loading = false;
             warnLogin = "Usuário e/ou senha incorretos!"
         })
     }
 
     const signIn = () => {
-        console.log(data)
+        loading = true;
         $pbStore.collection('users').create(data)
         .then(res => login(data.username, data.password))
         .catch(err => {
-            warnSign = "Usuário indisponível, tente pensar em um outro nome legal!"
+            loading = false;
+            warnSign = "Usuário indisponível, tente pensar em um outro nome legal!";
         })
     }
 
@@ -88,7 +91,7 @@
     </div>
     <p class="warn-validation">{warnLogin}</p>
     <p class="sign">Não tem uma conta? <a on:click={changeState}>Crie uma agora!</a></p>
-    <button disabled={!name || !password} class="sign-in" on:click={() => login(name, password)}>Entrar</button>
+    <button disabled={!name || !password && !loading} class="sign-in" on:click={() => login(name, password)}>{#if loading}<span class="loading-white"></span>{:else}Entrar{/if}</button>
 
     {:else if state == 'sign-in'}
     <h1>Falta pouco para usar nosso app!</h1>
@@ -104,7 +107,7 @@
     <p class="warn-validation">{warnSign}</p>
     <p class="sign">Já tem uma conta? <a on:click={changeState}>Entrar</a></p>
 
-    <button disabled={!(data.username && data.name && data.password && data.passwordConfirm)} class="sign-in" on:click={signIn}>Criar conta</button>
+    <button disabled={!(data.username && data.name && data.password && data.passwordConfirm)} class="sign-in" on:click={signIn}>{#if loading}<span class="loading-white"></span>{:else}Criar conta{/if}</button>
     {/if}
 </div>
 
@@ -202,6 +205,7 @@ p {
     background-color: rgb(70, 0, 128);
     transform: translateY(-4px);
 }
+
 .sign-in:disabled {
     opacity: .4;
     cursor: default;
