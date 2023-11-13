@@ -34,7 +34,16 @@
 
 
 <div class="container">
-    <h1>Mensagens</h1>
+    <div class="top-part">
+        <h1>Mensagens</h1>
+        <div class="input-control">
+            <span class="material-icons">
+                search
+            </span>
+            <input placeholder="Procurar uma mensagem..." type="text" class="search-user">
+        </div>
+        
+    </div>
 
     {#await promise}
         <span class="loading-white"></span>
@@ -69,6 +78,27 @@
 <NavMenuBottom />
 
 <style>
+    .input-control {
+        position: relative;
+    }
+    .input-control .material-icons {
+        position: absolute;
+        top: 25px;
+        left: 10px;
+        color: #585858;
+    }
+    .top-part {
+        padding: 20px 0;
+    }
+
+    .search-user {
+        background-color: #242424;
+        border: none;
+        width: 100%;
+        padding: 8px 6px 8px 50px;
+        margin-top: 20px;
+        border-radius: 5px;
+    }
     .container {
         height: 100%;
         display: flex;
@@ -85,7 +115,7 @@
         animation-duration: 700ms;
     }
     .rooms-list {
-        margin-top: 40px;
+        margin-top: 0px;
     }
     .user {
         text-decoration: none;
