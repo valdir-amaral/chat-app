@@ -9,6 +9,8 @@
 
     let data = {}
 
+    let passwordInput;
+
     function changeState() {
         state = state == 'sign-in' ? "login" : 'sign-in';
     }
@@ -72,6 +74,10 @@
             return true
         }
     }
+
+    const changeInputType = () => {
+        passwordInput.type = passwordInput.type == 'password' ? 'text' : 'password'
+    }
 </script>
 
 <div class="container">
@@ -81,12 +87,14 @@
 
     <div class="form">
         <div class="form-control">
-            <span class="material-icons">person</span>
+            <span class="material-icons left-icon">person</span>
             <input placeholder="Nome de usuário ou e-mail" bind:value={name} type="text">
         </div>
         <div class="form-control">
-            <span class="material-icons">lock</span>
-            <input on:input={validateLogin} on:blur={validateLogin} placeholder="Senha" bind:value={password} type="password">
+            <span class="material-icons left-icon">lock</span>
+            <input bind:this={passwordInput} on:input={validateLogin} on:blur={validateLogin} placeholder="Senha" bind:value={password} type="password">
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <span on:click={changeInputType} class="material-icons right-icon">{#if passwordInput}{passwordInput.type == 'password' ? 'visibility' : 'visibility_off'}{/if}</span>
         </div>
     </div>
     <p class="warn-validation">{warnLogin}</p>
@@ -105,7 +113,8 @@
         <input style="grid-area: e;" on:blur={checkPasswords} on:keypress={checkPasswords} bind:value={data.passwordConfirm} type="password" placeholder="Confirmar senha*">
     </div>
     <p class="warn-validation">{warnSign}</p>
-    <p class="sign">Já tem uma conta? <a on:click={changeState}>Entrar</a></p>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <p class="sign">Já tem uma conta? <a href="" on:click={changeState}>Entrar</a></p>
 
     <button disabled={!(data.username && data.name && data.password && data.passwordConfirm)} class="sign-in" on:click={signIn}>{#if loading}<span class="loading-white"></span>{:else}Criar conta{/if}</button>
     {/if}
@@ -173,10 +182,16 @@ p {
 .form-control {
     position: relative;
 }
-.form-control span {
+.form-control span.left-icon {
     top: 13px;
     left: 15px;
     position: absolute;
+}
+.form-control span.right-icon {
+    right: 15px;
+    position: absolute;
+    top: 17px;
+    font-size: 20px;
 }
 .form input:focus,
 .form-grid input:focus {
