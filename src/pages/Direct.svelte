@@ -58,7 +58,7 @@
                 </div>
                 <div class="room-info">
                     <p>{room.expand.people.filter(i => i.id != localStorage.user)[0].username}</p>
-                    <span>{room.expand.messages[room.messages.length - 1].message}</span>
+                    <span class="last-msg">{room.expand.messages[room.messages.length - 1].message}</span>
                 </div>
             </div>
             <div class="right-part">
@@ -90,7 +90,9 @@
     .top-part {
         padding: 20px 0;
     }
-
+    .last-msg {
+        font-size: 12px;
+    }
     .search-user {
         background-color: #242424;
         border: none;

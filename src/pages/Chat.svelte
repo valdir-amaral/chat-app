@@ -11,6 +11,7 @@
     let friend = '';
     let chatContainer;
     let promise = getMessages();
+    let msgContainer;
 
     afterUpdate(() => {
         if (msgs) scrollToBottom(chatContainer)
@@ -39,7 +40,8 @@
     async function getMessages() {
         const currentRoom = await $pbStore.collection('chat_room').getOne(params.id, {expand: 'people'})
         friend = await currentRoom.expand.people.filter(i => i.id != localStorage.user)[0];
-        const res = await $pbStore.collection('chat_msg').getList(1, 50, {filter: `chat_room="${params.id}"`, expand: 'user'})
+        const res = await $pbStore.collection('chat_msg').getList(1, 50, {filter: `chat_room="${params.id}"`, expand: 'user,replied_to'})
+        console.log(res)
         msgs = await res.items
         return res;
     }
@@ -85,6 +87,15 @@
         $pbStore.collection('users').update(localStorage.user, {'following+': friend.id})
         .then(res => console.log(res))
     }
+
+    const handleStart = ev => {
+        let rect = msgContainer.getBoundingClientRect();
+        let windowWidth = window.innerWidth
+
+        let distance = windowWidth - rect.left;
+        console.log(distance)
+        console.log(ev.currentTarget.left)
+    }
 </script>
 <div class="chat-layout">
     {#await promise}
@@ -107,8 +118,18 @@
 
         <div bind:this={chatContainer} class="chat">
             {#each msgs as msg}
-            <div class="message" class:me={msg.user == localStorage.user} class:other={msg.user != localStorage.user}>
-                <p>{msg.message}</p>
+            <div on:touchmove={handleStart} bind:this={msgContainer} class:me={msg.user == localStorage.user} class:other={msg.user != localStorage.user} class="container-msg">
+                {#if msg['replied_to']}
+                <div class="replied">
+                    <div>
+                        <span>{msg.expand['replied_to'].user == friend.id ? friend.username : "Você"}</span>
+                        <span>{msg.expand['replied_to'].message}</span>
+                    </div>
+                </div>
+                {/if}
+                <div class="message" class:me={msg.user == localStorage.user} class:other={msg.user != localStorage.user}>
+                    <p>{msg.message}</p>
+                </div>
             </div>
             {/each}
         </div>
@@ -131,6 +152,10 @@
 </div>
 
 <style>
+    .container-msg {
+        width: fit-content;
+        max-width: 65%;
+    }
     .user-img {
         width: 44px;
         height: 44px;
@@ -188,9 +213,17 @@
     }
     .message {
         padding: 10px;
-        max-width: 65%;
         min-width: 25px;
-        width: fit-content;
+        width: 100%;
+    }
+    .me {
+        margin-left: auto;
+    }
+    .other {
+        margin-right: auto;
+    }
+    .message p {
+        word-break: break-all;
     }
     .message.me {
         margin-left: auto;
@@ -223,5 +256,51 @@
         color: white;
         text-transform: uppercase;
     }
-   
+    .replied {
+        padding: 6px;
+        word-break: break-all;
+        font-size: 14px;
+        border-radius: 10px 10px 0 0;
+    }
+    .me .replied {
+        background-color: purple;
+
+    }
+    .me .replied div {
+        background-color: rgb(112, 10, 112);
+    }
+    .me .replied + .message {
+        border-radius: 0 0 0 10px;
+    }
+    .other .replied + .message {
+        border-radius: 0 0 10px 0;
+    }
+    .other .replied {
+        background-color: #242424;
+    }
+    .replied div {
+        padding: 5px 5px 5px 7px;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+        background-color: #3d3d3d;
+        position: relative;
+    }
+
+    .replied div::before {
+        content: "";
+        position: absolute;
+        height: 100%;
+        left: 0;
+        width: 2px;
+        top: 0;
+    }
+    .me .replied div::before {
+        background-color: rgb(255, 255, 255);
+    }
+    .other .replied div::before {
+        background-color: purple;
+    }
 </style>
