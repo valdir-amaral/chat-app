@@ -4,14 +4,13 @@
     import { push } from "svelte-spa-router";
 
     export let params = {};
-
+    let replyingTo = null
     let currentRoom;
     let newMsg = '';
     let msgs = [];
     let friend = '';
     let chatContainer;
     let promise = getMessages();
-    let msgContainer;
 
     afterUpdate(() => {
         if (msgs) scrollToBottom(chatContainer)
@@ -49,15 +48,16 @@
 
     function sendMessage() {
         if (!newMsg.length) return;
-        msgs.push({message: newMsg, 'chat_room': params.id, 'user': localStorage.user})
+        msgs.push({message: newMsg, 'chat_room': params.id, 'user': localStorage.user, expand: {'replied_to': {message: replyingTo.msg.id, user: replyingTo.author} }})
         msgs = msgs;
         let sendMessage = newMsg;
         newMsg = "";
-
+        console.log(replyingTo.msg.id)
         $pbStore.collection('chat_msg').create({
             'message': sendMessage,
             'chat_room': params.id,
-            'user': localStorage.user
+            'user': localStorage.user,
+            'replied_to': replyingTo.msg.id
         })
         .then(res => {
             $pbStore.collection('chat_room').update(params.id, {
@@ -88,14 +88,6 @@
         .then(res => console.log(res))
     }
 
-    const handleStart = ev => {
-        let rect = msgContainer.getBoundingClientRect();
-        let windowWidth = window.innerWidth
-
-        let distance = windowWidth - rect.left;
-        console.log(distance)
-        console.log(ev.currentTarget.left)
-    }
 </script>
 <div class="chat-layout">
     {#await promise}
@@ -118,7 +110,7 @@
 
         <div bind:this={chatContainer} class="chat">
             {#each msgs as msg}
-            <div on:touchmove={handleStart} bind:this={msgContainer} class:me={msg.user == localStorage.user} class:other={msg.user != localStorage.user} class="container-msg">
+            <div on:click={() => replyingTo = {author: msg.user, msg: msg}} class:me={msg.user == localStorage.user} class:other={msg.user != localStorage.user} class="container-msg">
                 {#if msg['replied_to']}
                 <div class="replied">
                     <div>
@@ -137,16 +129,27 @@
     {/await}
     
     <div class="bottom-part">
-        <div style="width: 100%;">
-            <p class="new-input" bind:textContent={newMsg} contenteditable="true">
-                {newMsg}
-            </p>
+        
+        {#if replyingTo}
+        <div class="replying-msg">
+            <p>respondendo {replyingTo.author == friend.id ? friend.username : "Você"}</p>
+            <span>{replyingTo.msg.message}</span>
         </div>
-        
-        
-        {#if newMsg.length}
-        <button on:click={sendMessage}>➜</button>
         {/if}
+        
+
+        <div style="width: 100%; display: flex; gap: 10px;">
+            <div style="width: 100%;">
+                <p class="new-input" bind:textContent={newMsg} contenteditable="true">
+                    {newMsg}
+                </p>
+            </div>
+            
+            
+            {#if newMsg.length}
+            <button on:click={sendMessage}>➜</button>
+            {/if}
+        </div>
     </div>
 
 </div>
@@ -178,10 +181,22 @@
         gap: 10px;
         font-size: 20px;
     }
+
+    .replying-msg {
+        margin-top: -70px;
+        width: 90%;
+        padding: 10px 20px;
+        border-radius: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: #3d3d3d;
+    }
     .bottom-part {
         margin-top: auto;
         display: flex;
+        position: relative;
         gap: 15px;
+        flex-direction: column;
         padding-left: 6px;
         padding-right: 6px;
     }
