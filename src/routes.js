@@ -4,6 +4,7 @@ import Chat from './pages/Chat.svelte';
 import Posts from './pages/Posts.svelte';
 import Direct from './pages/Direct.svelte';
 import Profile from './pages/Profile.svelte';
+import EditProfile from './pages/EditProfile.svelte';
 
 const routes = {
     '/': Login,
@@ -11,7 +12,8 @@ const routes = {
     '/chat': Direct,
     '/chat/:id': Chat,
     '/explorar': Posts,
-    '/perfil': Profile
+    '/perfil': Profile,
+    '/editar-perfil': EditProfile
 }
 
 export default routes;
