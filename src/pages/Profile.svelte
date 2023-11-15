@@ -21,7 +21,7 @@
         <div class="top-part">
             <div class="user-image" style={`background-image: url(${$pbStore.baseUrl}/api/files/${data.collectionId}/${data.id}/${data.avatar})`}></div>
             <h1>@{data.username}</h1>
-            <p class="bio">{data.bio || "Uma bio muito legal"}</p>
+            <p class="bio">{data.bio || "Sem criatividade pra bio"}</p>
             <a use:link href="/editar-perfil"><span class="material-icons">edit</span>Editar perfil</a>
         </div>
         <div class="info-numbers">
@@ -43,7 +43,8 @@
 
         <div class="about-me container">
             <h2>Sobre mim</h2>
-            <p>{data.about || "Eu sou uma pessoa bem assim sabe bem biruleibe da cabeça hihihihi"}</p>
+           
+            <p>{data.description || "Não tem nada a dizer :v"}</p>
         </div>
     </main>
 {/await}
